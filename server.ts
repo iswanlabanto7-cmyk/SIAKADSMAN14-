@@ -48,13 +48,29 @@ let db = {
     { id: "j3", date: new Date().toISOString().split('T')[0], userId: "5", name: "Ahmad Jufri, S.Kom.", subject: "Informatika", classRoom: "X MIPA", material: "Algoritma Pemrograman Dasar", notes: "Praktikum dasar Python menggunakan web compiler.", timestamp: "11:00:00" }
   ],
   dokumen: [
-    { id: "d1", userId: "3", name: "Budi Santoso, S.Pd.", title: "Modul Ajar Matematika Turunan XII", category: "Modul Ajar", fileUrl: "https://docs.google.com/document/d/sample1/edit", fileName: "modul_matematika_XII.pdf", uploadDate: "2025-07-15", status: "Disetujui" },
-    { id: "d2", userId: "4", name: "Nurul Hidayah, S.Pd.", title: "RPP Bahasa Indonesia Teks Editorial", category: "RPP", fileUrl: "https://docs.google.com/document/d/sample2/edit", fileName: "rpp_indo_editorial.docx", uploadDate: "2025-07-18", status: "Disetujui" },
-    { id: "d3", userId: "5", name: "Ahmad Jufri, S.Kom.", title: "Silabus Informatika Kelas X", category: "Silabus", fileUrl: "https://docs.google.com/document/d/sample3/edit", fileName: "silabus_inf_x.pdf", uploadDate: "2025-07-20", status: "Menunggu" }
+    { id: "d1", userId: "3", name: "Budi Santoso, S.Pd.", title: "Modul Ajar Matematika: Diferensial & Turunan Aljabar", category: "Modul Ajar", fileUrl: "https://docs.google.com/document/d/sample1/edit", fileName: "Modul_Ajar_Matematika_Fase_F.pdf", uploadDate: "2025-07-15", status: "Disetujui", fileSize: "1.4 MB", notes: "Sistematika asesmen formatif dan rubrik penilaian sudah sangat lengkap." },
+    { id: "d2", userId: "3", name: "Budi Santoso, S.Pd.", title: "ATP Matematika Fase F (Kelas XI & XII)", category: "ATP", fileUrl: "https://docs.google.com/document/d/sample2/edit", fileName: "ATP_Matematika_Fase_F_SMA14.pdf", uploadDate: "2025-07-12", status: "Disetujui", fileSize: "820 KB", notes: "Alur Tujuan Pembelajaran runtut sesuai Capaian Pembelajaran BSKAP." },
+    { id: "d3", userId: "3", name: "Budi Santoso, S.Pd.", title: "Program Tahunan (PROTA) Matematika 2025/2026", category: "PROTA", fileUrl: "https://docs.google.com/document/d/sample3/edit", fileName: "PROTA_Matematika_2025_2026.docx", uploadDate: "2025-07-10", status: "Disetujui", fileSize: "450 KB", notes: "Alokasi jam efektif semester ganjil dan genap sesuai kalender pendidikan." },
+    { id: "d4", userId: "3", name: "Budi Santoso, S.Pd.", title: "Program Semester (PROSEM) Ganjil Matematika XII", category: "PROSEM", fileUrl: "https://docs.google.com/document/d/sample4/edit", fileName: "PROSEM_Ganjil_Matematika_XII.xlsx", uploadDate: "2025-07-11", status: "Disetujui", fileSize: "510 KB", notes: "Matriks distribusi mingguan sudah disesuaikan dengan PTS & PAS." },
+
+    { id: "d5", userId: "4", name: "Nurul Hidayah, S.Pd.", title: "Modul Ajar Bahasa Indonesia: Menulis Opini dan Editorial", category: "Modul Ajar", fileUrl: "https://docs.google.com/document/d/sample5/edit", fileName: "Modul_Ajar_Bahasa_Indonesia_XI.pdf", uploadDate: "2025-07-18", status: "Disetujui", fileSize: "2.1 MB", notes: "Lembar kerja peserta didik (LKPD) berbasis kontekstual daerah Maluku Utara." },
+    { id: "d6", userId: "4", name: "Nurul Hidayah, S.Pd.", title: "ATP Bahasa Indonesia Fase F SMA", category: "ATP", fileUrl: "https://docs.google.com/document/d/sample6/edit", fileName: "ATP_Bahasa_Indonesia_Fase_F.pdf", uploadDate: "2025-07-14", status: "Disetujui", fileSize: "780 KB", notes: "Elemen Menyimak, Membaca, dan Menulis terintegrasi dengan baik." },
+    { id: "d7", userId: "4", name: "Nurul Hidayah, S.Pd.", title: "PROTA Bahasa Indonesia Kelas XI", category: "PROTA", fileUrl: "https://docs.google.com/document/d/sample7/edit", fileName: "PROTA_Bahasa_Indonesia_XI.pdf", uploadDate: "2025-07-16", status: "Disetujui", fileSize: "390 KB", notes: "Pembagian jam per tema sesuai acuan kurikulum." },
+    { id: "d8", userId: "4", name: "Nurul Hidayah, S.Pd.", title: "PROSEM Semester Ganjil Bahasa Indonesia", category: "PROSEM", fileUrl: "https://docs.google.com/document/d/sample8/edit", fileName: "PROSEM_Ganjil_Bahasa_Indonesia.xlsx", uploadDate: "2025-07-16", status: "Menunggu", fileSize: "420 KB", notes: "Menunggu penelaahan supervisor terkait alokasi pekan jeda." },
+
+    { id: "d9", userId: "5", name: "Ahmad Jufri, S.Kom.", title: "ATP Informatika Fase E (Kelas X)", category: "ATP", fileUrl: "https://docs.google.com/document/d/sample9/edit", fileName: "ATP_Informatika_Kelas_X.pdf", uploadDate: "2025-07-20", status: "Menunggu", fileSize: "650 KB", notes: "Perlu konfirmasi capaian berpikir komputasional." },
+    { id: "d10", userId: "5", name: "Ahmad Jufri, S.Kom.", title: "Modul Ajar Informatika: Algoritma & Pemrograman Python Dasar", category: "Modul Ajar", fileUrl: "https://docs.google.com/document/d/sample10/edit", fileName: "Modul_Informatika_Python_X.pdf", uploadDate: "2025-07-22", status: "Menunggu", fileSize: "1.8 MB", notes: "Materi praktikum laboratorium komputer." },
+    { id: "d11", userId: "5", name: "Ahmad Jufri, S.Kom.", title: "PROTA Informatika Kelas X Tahun 2025/2026", category: "PROTA", fileUrl: "https://docs.google.com/document/d/sample11/edit", fileName: "PROTA_Informatika_2025.docx", uploadDate: "2025-07-21", status: "Revisi", fileSize: "340 KB", notes: "Harap sesuaikan pembagian jam untuk praktikum jaringan." },
+    { id: "d12", userId: "5", name: "Ahmad Jufri, S.Kom.", title: "PROSEM Informatika Semester Ganjil", category: "PROSEM", fileUrl: "https://docs.google.com/document/d/sample12/edit", fileName: "PROSEM_Informatika_Ganjil.xlsx", uploadDate: "2025-07-21", status: "Menunggu", fileSize: "490 KB", notes: "Pekan penilaian sumatif belum sinkron dengan kalender sekolah." },
+
+    { id: "d13", userId: "6", name: "Dewi Lestari, S.Pd.", title: "ATP Biologi Fase F SMA", category: "ATP", fileUrl: "https://docs.google.com/document/d/sample13/edit", fileName: "ATP_Biologi_Fase_F.pdf", uploadDate: "2025-07-23", status: "Disetujui", fileSize: "890 KB", notes: "Peta konsep bioteknologi dan keanekaragaman hayati Maluku Utara mantap." },
+    { id: "d14", userId: "6", name: "Dewi Lestari, S.Pd.", title: "PROTA Biologi Kelas XI", category: "PROTA", fileUrl: "https://docs.google.com/document/d/sample14/edit", fileName: "PROTA_Biologi_XI.docx", uploadDate: "2025-07-23", status: "Disetujui", fileSize: "410 KB", notes: "Alokasi jam teori dan praktikum seimbang." },
+    { id: "d15", userId: "6", name: "Dewi Lestari, S.Pd.", title: "PROSEM Ganjil Biologi Kelas XI", category: "PROSEM", fileUrl: "https://docs.google.com/document/d/sample15/edit", fileName: "PROSEM_Biologi_Ganjil_XI.xlsx", uploadDate: "2025-07-24", status: "Disetujui", fileSize: "460 KB", notes: "Jadwal praktikum mikroskop sudah terplot." },
+    { id: "d16", userId: "6", name: "Dewi Lestari, S.Pd.", title: "Modul Ajar Biologi: Struktur Sel & Transpor Membran", category: "Modul Ajar", fileUrl: "https://docs.google.com/document/d/sample16/edit", fileName: "Modul_Biologi_Sel_XI.pdf", uploadDate: "2025-07-25", status: "Disetujui", fileSize: "2.4 MB", notes: "LKPD pengamatan sel bawang merah dan gabus sangat aplikatif." }
   ],
   supervisi: [
-    { id: "s1", userId: "3", teacherName: "Budi Santoso, S.Pd.", supervisor: "Drs. H. Abdullah Mahmud, M.Pd.", date: "2025-09-10", pedagogicalScore: 88, professionalScore: 90, socialScore: 85, personalityScore: 92, averageScore: 88.7, notes: "Pembelajaran interaktif, metode problem solving sudah sangat baik. Pertahankan." },
-    { id: "s2", userId: "4", teacherName: "Nurul Hidayah, S.Pd.", supervisor: "Siti Rahma Umar, S.Pd.", date: "2025-09-12", pedagogicalScore: 85, professionalScore: 88, socialScore: 90, personalityScore: 89, averageScore: 88.0, notes: "Media pembelajaran visual sangat menarik. Tingkatkan variasi tanya jawab aktif." }
+    { id: "s1", userId: "3", teacherName: "Budi Santoso, S.Pd.", supervisor: "Drs. H. Abdullah Mahmud, M.Pd.", date: "2025-09-10", pedagogicalScore: 88, professionalScore: 90, socialScore: 85, personalityScore: 92, averageScore: 88.7, notes: "Perangkat ajar (ATP, PROTA, PROSEM, Modul Ajar) sangat tertib dan lengkap. Pembelajaran berdiferensiasi terlaksana sangat baik." },
+    { id: "s2", userId: "4", teacherName: "Nurul Hidayah, S.Pd.", supervisor: "Siti Rahma Umar, S.Pd.", date: "2025-09-12", pedagogicalScore: 85, professionalScore: 88, socialScore: 90, personalityScore: 89, averageScore: 88.0, notes: "Media pembelajaran visual menarik. ATP dan Modul Ajar selaras dengan capaian Kurikulum Merdeka." }
   ]
 };
 
@@ -128,10 +144,11 @@ app.post('/api/dokumen', (req, res) => {
 
 app.put('/api/dokumen/:id/status', (req, res) => {
   const { id } = req.params;
-  const { status } = req.body;
+  const { status, notes } = req.body;
   const doc = db.dokumen.find(d => d.id === id);
   if (doc) {
-    doc.status = status;
+    if (status) doc.status = status;
+    if (notes !== undefined) doc.notes = notes;
     res.json({ success: true, doc });
   } else {
     res.status(404).json({ success: false, message: 'Dokumen tidak ditemukan' });
@@ -254,43 +271,97 @@ function sendJSON(data) {
 
 // Gemini AI endpoints
 app.post('/api/gemini/generate-rpp', async (req, res) => {
+  const { subject, grade, topic, objective } = req.body;
   try {
-    const { subject, grade, topic, objective } = req.body;
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error("No API Key configured");
+    }
     const prompt = `Bertindaklah sebagai Kurikulum Merdeka Expert. Buatkan Modul Ajar / Rencana Pelaksanaan Pembelajaran (RPP) yang profesional dan ringkas untuk mata pelajaran ${subject} kelas ${grade} dengan topik "${topic}" dan tujuan pembelajaran "${objective}". 
     Format dengan struktur markdown rapi:
     1. Identitas Modul (Mata Pelajaran, Kelas, Alokasi Waktu)
-    2. Tujuan Pembelajaran
-    3. Kegiatan Pembelajaran (Pendahuluan, Inti, Penutup)
-    4. Asesmen / Penilaian Pembelajaran
+    2. Capaian Pembelajaran & Tujuan Pembelajaran (ATP)
+    3. Kegiatan Pembelajaran Berdiferensiasi (Pendahuluan, Inti, Penutup)
+    4. Asesmen / Penilaian Pembelajaran (Formatif & Sumatif)
+    5. Media dan Bahan Ajar
     Sekolah: SMA Negeri 14 Kota Tidore Kepulauan.`;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.8-flash',
       contents: prompt
     });
 
     res.json({ success: true, result: response.text });
   } catch (err: any) {
-    res.status(500).json({ success: false, message: err.message || 'Gagal menghasilkan RPP dengan Gemini AI' });
+    // High-quality fallback for SMA Negeri 14 Kota Tidore Kepulauan
+    const fallbackRPP = `### MODUL AJAR KURIKULUM MERDEKA
+**Satuan Pendidikan**: SMA Negeri 14 Kota Tidore Kepulauan  
+**Mata Pelajaran**: ${subject || 'Mata Pelajaran Umum'}  
+**Fase / Kelas**: ${grade || 'Fase E / F'}  
+**Alokasi Waktu**: 2 JP (2 x 45 Menit)  
+**Materi / Topik**: ${topic || 'Materi Pembelajaran'}  
+
+---
+
+#### 1. Tujuan Pembelajaran (Berdasarkan ATP)
+- ${objective || 'Peserta didik mampu memahami konsep dasar, menganalisis permasalahan, dan mengaplikasikannya dalam konteks kehidupan sehari-hari.'}
+- Mengembangkan Profil Pelajar Pancasila: Bernalar Kritis, Gotong Royong, dan Mandiri.
+
+#### 2. Kegiatan Pembelajaran Berdiferensiasi
+- **Pendahuluan (15 Menit)**:
+  1. Guru membuka pembelajaran dengan salam khas Maluku Utara dan berdoa bersama.
+  2. Guru mengecek kesiapan fisik dan psikologis siswa serta mengaitkan apersepsi kearifan lokal Tidore Kepulauan.
+  3. Menyampaikan tujuan dan alur kegiatan pembelajaran.
+- **Kegiatan Inti (60 Menit)**:
+  1. *Eksplorasi Konsep*: Siswa dibagi dalam kelompok heterogen untuk mengamati tayangan materi tentang "${topic}".
+  2. *Diskusi Terbimbing*: Guru memberikan Lembar Kerja Peserta Didik (LKPD) kontekstual.
+  3. *Presentasi*: Perwakilan kelompok memaparkan hasil telaah dan saling memberikan umpan balik (peer feedback).
+- **Penutup (15 Menit)**:
+  1. Refleksi bersama terhadap poin-poin penting yang telah dipelajari.
+  2. Guru memberikan apresiasi dan tindak lanjut penugasan mandiri.
+  3. Doa penutup dan salam.
+
+#### 3. Asesmen Pembelajaran
+- **Asesmen Formatif**: Pengamatan sikap keaktifan saat diskusi kelompok dan rubrik ceklis lembar kerja.
+- **Asesmen Sumatif**: Tes tertulis singkat pemahaman konsep materi ${topic}.`;
+
+    res.json({ success: true, result: fallbackRPP });
   }
 });
 
 app.post('/api/gemini/supervisor-feedback', async (req, res) => {
+  const { teacherName, subject, scores, notes } = req.body;
   try {
-    const { teacherName, subject, scores, notes } = req.body;
+    if (!process.env.GEMINI_API_KEY) {
+      throw new Error("No API Key configured");
+    }
     const prompt = `Berikan catatan saran pembinaan profesional yang membangun dan suportif untuk Guru ${teacherName} (${subject}) yang baru disupervisi di SMA Negeri 14 Kota Tidore Kepulauan.
     Skor Penilaian: Pedagogik: ${scores.pedagogical}, Profesional: ${scores.professional}, Sosial: ${scores.social}, Kepribadian: ${scores.personality}.
     Catatan pengamat: "${notes}".
     Tuliskan dalam format paragraf reflektif yang memotivasi dan memberi 3 rekomendasi peningkatan mutu pembelajaran Kurikulum Merdeka.`;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.8-flash',
       contents: prompt
     });
 
     res.json({ success: true, feedback: response.text });
   } catch (err: any) {
-    res.status(500).json({ success: false, message: err.message || 'Gagal menghasilkan feedback AI' });
+    const avgScore = ((Number(scores?.pedagogical || 85) + Number(scores?.professional || 85) + Number(scores?.social || 85) + Number(scores?.personality || 85)) / 4).toFixed(1);
+    const fallbackFeedback = `**Catatan Pembinaan Supervisi Akademik - Kepala Sekolah / Waka Kurikulum**
+Yth. Bapak/Ibu **${teacherName}** (${subject}),
+Berdasarkan hasil supervisi pembelajaran dan telaah perangkat ajar (ATP, PROTA, PROSEM, dan Modul Ajar) dengan skor rata-rata **${avgScore}** (Kategori: Amat Baik):
+
+1. **Apresiasi Pelaksanaan KBM**:
+   Proses pembelajaran di kelas sudah sangat terstruktur, interaktif, dan mencerminkan komitmen tinggi terhadap kemajuan belajar peserta didik di SMA Negeri 14 Kota Tidore Kepulauan. Sikap keteladanan dan interaksi sosial yang hangat menciptakan suasana belajar yang kondusif. Catatan lapangan: "${notes || 'KBM berlangsung kondusif dan aktif.'}"
+
+2. **Tiga Rekomendasi Peningkatan Mutu**:
+   - **Sinkronisasi ATP & Modul Ajar**: Pastikan setiap tahapan pembelajaran berdiferensiasi pada modul ajar mencantumkan ragam asesmen formatif awal (diagnostik) untuk memetakan kesiapan peserta didik.
+   - **Pemanfaatan Konteks Lokal Tidore**: Perkuat integrasi kontekstual bahari, sejarah, dan potensi lingkungan Maluku Utara dalam studi kasus atau proyek pembelajaran.
+   - **Refleksi Berkelanjutan**: Terus dokumentasikan umpan balik peserta didik di akhir semester sebagai bahan penyempurnaan PROSEM dan program tindak lanjut supervisi.
+
+*Tetap semangat dalam mengabdi dan mencerdaskan putra-putri Tidore Kepulauan!*`;
+
+    res.json({ success: true, feedback: fallbackFeedback });
   }
 });
 

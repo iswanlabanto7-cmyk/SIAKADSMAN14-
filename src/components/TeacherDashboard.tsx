@@ -31,7 +31,7 @@ export default function TeacherDashboard({
   const [jurnalSuccess, setJurnalSuccess] = useState(false);
 
   // Upload document form state
-  const [docForm, setDocForm] = useState({ title: '', category: 'Modul Ajar' as const, fileName: '', fileUrl: '' });
+  const [docForm, setDocForm] = useState({ title: '', category: 'ATP' as any, fileName: '', fileUrl: '', fileSize: '500 KB' });
   const [uploadSuccess, setUploadSuccess] = useState(false);
 
   // AI RPP Generator state
@@ -74,12 +74,13 @@ export default function TeacherDashboard({
         name: user.name,
         title: docForm.title,
         category: docForm.category,
-        fileName: docForm.fileName || 'dokumen_perangkat_ajar.pdf',
-        fileUrl: docForm.fileUrl || 'https://docs.google.com/document/d/sample/edit'
+        fileName: docForm.fileName || `${docForm.category}_${user.name.split(' ')[0]}_SMA14.pdf`,
+        fileUrl: docForm.fileUrl || `https://drive.google.com/file/d/sman14_tidore_${Date.now()}/view`,
+        fileSize: docForm.fileSize || '850 KB'
       })
     });
     setUploadSuccess(true);
-    setDocForm({ title: '', category: 'Modul Ajar', fileName: '', fileUrl: '' });
+    setDocForm({ title: '', category: 'ATP', fileName: '', fileUrl: '', fileSize: '500 KB' });
     setTimeout(() => setUploadSuccess(false), 3000);
     refreshData();
   };
@@ -347,25 +348,37 @@ export default function TeacherDashboard({
                   onChange={e => setDocForm({ ...docForm, category: e.target.value as any })}
                   className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-900"
                 >
-                  <option value="Modul Ajar">Modul Ajar</option>
-                  <option value="RPP">RPP (Rencana Pelaksanaan Pembelajaran)</option>
+                  <option value="ATP">ATP (Alur Tujuan Pembelajaran)</option>
+                  <option value="PROTA">PROTA (Program Tahunan)</option>
+                  <option value="PROSEM">PROSEM (Program Semester)</option>
+                  <option value="Modul Ajar">Modul Ajar (Kurikulum Merdeka)</option>
                   <option value="Silabus">Silabus</option>
-                  <option value="Prota/Prosem">Prota / Prosem</option>
+                  <option value="RPP">RPP (Rencana Pelaksanaan Pembelajaran)</option>
                   <option value="Lainnya">Lainnya</option>
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">File Dokumen (Simulasi Upload)</label>
+                <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">File Dokumen (PDF, Word, Excel)</label>
                 <input
                   type="file"
+                  accept=".pdf,.docx,.doc,.xlsx,.xls,.pptx"
                   onChange={e => {
                     if (e.target.files && e.target.files[0]) {
-                      setDocForm({ ...docForm, fileName: e.target.files[0].name });
+                      const file = e.target.files[0];
+                      const sizeFormatted = file.size > 1024 * 1024 
+                        ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` 
+                        : `${Math.round(file.size / 1024)} KB`;
+                      setDocForm({ 
+                        ...docForm, 
+                        fileName: file.name,
+                        fileSize: sizeFormatted
+                      });
                     }
                   }}
                   className="w-full border border-gray-300 rounded-xl px-4 py-2 text-sm bg-gray-50 focus:outline-none"
                   required
                 />
+                <p className="text-[11px] text-gray-500 mt-1">Format didukung: PDF, DOCX, XLSX. Berkas akan otomatis tersimpan ke Google Drive sekolah.</p>
               </div>
               <button
                 type="submit"

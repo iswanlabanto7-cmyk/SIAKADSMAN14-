@@ -36,11 +36,14 @@ export interface DocumentRecord {
   userId: string;
   name: string;
   title: string;
-  category: 'RPP' | 'Modul Ajar' | 'Silabus' | 'Prota/Prosem' | 'Lainnya';
+  category: 'ATP' | 'PROTA' | 'PROSEM' | 'Modul Ajar' | 'Silabus' | 'RPP' | 'Prota/Prosem' | 'Lainnya';
   fileUrl: string;
   fileName: string;
   uploadDate: string;
   status: 'Menunggu' | 'Disetujui' | 'Revisi';
+  notes?: string;
+  fileContent?: string;
+  fileSize?: string;
 }
 
 export interface SupervisionRecord {
