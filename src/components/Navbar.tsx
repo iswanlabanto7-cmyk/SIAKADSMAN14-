@@ -104,6 +104,15 @@ export default function Navbar({ user, onLogout, activeTab, setActiveTab }: Navb
               >
                 Pengaturan Sekolah
               </button>
+              <button
+                onClick={() => setActiveTab('audit-trail')}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition whitespace-nowrap flex items-center gap-1.5 ${
+                  activeTab === 'audit-trail' ? 'bg-amber-500 text-blue-950 font-bold shadow' : 'text-amber-300 hover:bg-blue-900/60'
+                }`}
+              >
+                <ShieldCheck className="w-4 h-4 text-amber-400" />
+                Audit Trail (Log)
+              </button>
             </>
           ) : (
             <>

@@ -68,3 +68,18 @@ export interface SchoolSettings {
   academicYear: string;
   semester: string;
 }
+
+export interface AuditLog {
+  id: string;
+  timestamp: string;
+  userId: string;
+  userName: string;
+  userRole: 'Admin' | 'Guru/Tendik';
+  action: string;
+  category: 'AUTH' | 'DOKUMEN' | 'ABSENSI' | 'JURNAL' | 'SUPERVISI' | 'SISTEM';
+  description: string;
+  ipAddress: string;
+  status: 'SUCCESS' | 'WARNING' | 'FAILED';
+  details?: Record<string, any>;
+}
+

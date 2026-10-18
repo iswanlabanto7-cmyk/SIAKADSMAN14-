@@ -6,6 +6,8 @@ import AdminDashboard from './components/AdminDashboard';
 import TeacherDashboard from './components/TeacherDashboard';
 import GasViewer from './components/GasViewer';
 
+import AuditTrail from './components/AuditTrail';
+
 export default function App() {
   const [user, setUser] = useState<User | null>(() => {
     const saved = localStorage.getItem('siakad_user');
@@ -63,7 +65,26 @@ export default function App() {
     setActiveTab('dashboard');
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    if (user) {
+      try {
+        await fetch('/api/audit-trail', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'LOGOUT',
+            category: 'AUTH',
+            userId: user.id,
+            userName: user.name,
+            userRole: user.role,
+            description: `Pengguna ${user.name} (${user.role}) keluar (logout) dari sistem`,
+            status: 'SUCCESS'
+          })
+        });
+      } catch (e) {
+        // ignore
+      }
+    }
     setUser(null);
     localStorage.removeItem('siakad_user');
   };
@@ -84,6 +105,8 @@ export default function App() {
       <main className="flex-1 py-8">
         {activeTab === 'gas-viewer' ? (
           <GasViewer />
+        ) : activeTab === 'audit-trail' ? (
+          <AuditTrail settings={settings} />
         ) : user.role === 'Admin' ? (
           <AdminDashboard
             activeTab={activeTab}

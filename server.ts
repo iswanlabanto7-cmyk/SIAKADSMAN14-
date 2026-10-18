@@ -18,8 +18,30 @@ const PORT = 3000;
 // Initialize Gemini AI
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 
+interface AuditLogItem {
+  id: string;
+  timestamp: string;
+  userId: string;
+  userName: string;
+  userRole: 'Admin' | 'Guru/Tendik';
+  action: string;
+  category: 'AUTH' | 'DOKUMEN' | 'ABSENSI' | 'JURNAL' | 'SUPERVISI' | 'SISTEM';
+  description: string;
+  ipAddress: string;
+  status: 'SUCCESS' | 'WARNING' | 'FAILED';
+  details?: Record<string, any>;
+}
+
 // In-Memory Database for SMA Negeri 14 Kota Tidore Kepulauan
-let db = {
+let db: {
+  settings: any;
+  users: any[];
+  absensi: any[];
+  jurnal: any[];
+  dokumen: any[];
+  supervisi: any[];
+  auditLogs: AuditLogItem[];
+} = {
   settings: {
     schoolName: "SMA Negeri 14 Kota Tidore Kepulauan",
     npsn: "69988123",
@@ -71,18 +93,188 @@ let db = {
   supervisi: [
     { id: "s1", userId: "3", teacherName: "Budi Santoso, S.Pd.", supervisor: "Drs. H. Abdullah Mahmud, M.Pd.", date: "2025-09-10", pedagogicalScore: 88, professionalScore: 90, socialScore: 85, personalityScore: 92, averageScore: 88.7, notes: "Perangkat ajar (ATP, PROTA, PROSEM, Modul Ajar) sangat tertib dan lengkap. Pembelajaran berdiferensiasi terlaksana sangat baik." },
     { id: "s2", userId: "4", teacherName: "Nurul Hidayah, S.Pd.", supervisor: "Siti Rahma Umar, S.Pd.", date: "2025-09-12", pedagogicalScore: 85, professionalScore: 88, socialScore: 90, personalityScore: 89, averageScore: 88.0, notes: "Media pembelajaran visual menarik. ATP dan Modul Ajar selaras dengan capaian Kurikulum Merdeka." }
+  ],
+  auditLogs: [
+    {
+      id: "log_1",
+      timestamp: new Date(Date.now() - 1000 * 60 * 12).toISOString(),
+      userId: "1",
+      userName: "Drs. H. Abdullah Mahmud, M.Pd.",
+      userRole: "Admin",
+      action: "LOGIN_SUCCESS",
+      category: "AUTH",
+      description: "Admin Kepala Sekolah berhasil login ke sistem SIAKAD",
+      ipAddress: "180.252.88.14 (Kota Tidore)",
+      status: "SUCCESS"
+    },
+    {
+      id: "log_2",
+      timestamp: new Date(Date.now() - 1000 * 60 * 35).toISOString(),
+      userId: "3",
+      userName: "Budi Santoso, S.Pd.",
+      userRole: "Guru/Tendik",
+      action: "DOKUMEN_UPLOAD",
+      category: "DOKUMEN",
+      description: "Mengunggah dokumen Modul Ajar: 'Diferensial & Turunan Aljabar' (1.4 MB)",
+      ipAddress: "182.1.205.42 (Oba Utara)",
+      status: "SUCCESS",
+      details: { category: "Modul Ajar", fileName: "Modul_Ajar_Matematika_Fase_F.pdf" }
+    },
+    {
+      id: "log_3",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+      userId: "1",
+      userName: "Drs. H. Abdullah Mahmud, M.Pd.",
+      userRole: "Admin",
+      action: "DOKUMEN_VERIFIED",
+      category: "SUPERVISI",
+      description: "Menyetujui dokumen ATP Matematika Fase F milik Budi Santoso, S.Pd.",
+      ipAddress: "180.252.88.14 (Kota Tidore)",
+      status: "SUCCESS",
+      details: { status: "Disetujui", targetDoc: "ATP_Matematika_Fase_F_SMA14.pdf" }
+    },
+    {
+      id: "log_4",
+      timestamp: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
+      userId: "4",
+      userName: "Nurul Hidayah, S.Pd.",
+      userRole: "Guru/Tendik",
+      action: "ABSENSI_SUBMIT",
+      category: "ABSENSI",
+      description: "Mencatatkan presensi harian: Hadir (Tepat waktu)",
+      ipAddress: "182.1.205.88 (Sofifi)",
+      status: "SUCCESS",
+      details: { status: "Hadir", time: "07:20:10" }
+    },
+    {
+      id: "log_5",
+      timestamp: new Date(Date.now() - 1000 * 60 * 130).toISOString(),
+      userId: "3",
+      userName: "Budi Santoso, S.Pd.",
+      userRole: "Guru/Tendik",
+      action: "JURNAL_SUBMIT",
+      category: "JURNAL",
+      description: "Mengisi jurnal mengajar Matematika XII IPA 1 materi 'Turunan Fungsi Aljabar'",
+      ipAddress: "182.1.205.42 (Oba Utara)",
+      status: "SUCCESS"
+    },
+    {
+      id: "log_6",
+      timestamp: new Date(Date.now() - 1000 * 60 * 180).toISOString(),
+      userId: "unknown",
+      userName: "guest_attempt",
+      userRole: "Guru/Tendik",
+      action: "LOGIN_FAILED",
+      category: "AUTH",
+      description: "Percobaan login gagal dengan username 'guru_demo' (Kredensial tidak cocok)",
+      ipAddress: "36.88.12.91 (Maluku Utara)",
+      status: "FAILED"
+    },
+    {
+      id: "log_7",
+      timestamp: new Date(Date.now() - 1000 * 60 * 240).toISOString(),
+      userId: "1",
+      userName: "Drs. H. Abdullah Mahmud, M.Pd.",
+      userRole: "Admin",
+      action: "SUPERVISI_EVALUASI",
+      category: "SUPERVISI",
+      description: "Menyelesaikan penilaian supervisi tatap muka untuk Budi Santoso, S.Pd. (Skor: 88.7)",
+      ipAddress: "180.252.88.14 (Kota Tidore)",
+      status: "SUCCESS"
+    }
   ]
 };
+
+// Audit Trail Helper
+function logAudit(
+  action: string,
+  category: 'AUTH' | 'DOKUMEN' | 'ABSENSI' | 'JURNAL' | 'SUPERVISI' | 'SISTEM',
+  userId: string,
+  userName: string,
+  userRole: 'Admin' | 'Guru/Tendik',
+  description: string,
+  status: 'SUCCESS' | 'WARNING' | 'FAILED' = 'SUCCESS',
+  ipAddress: string = '180.252.88.14 (Kota Tidore)',
+  details?: Record<string, any>
+) {
+  const newLog = {
+    id: 'log_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+    timestamp: new Date().toISOString(),
+    userId: userId || 'system',
+    userName: userName || 'Sistem',
+    userRole: userRole || 'Guru/Tendik',
+    action,
+    category,
+    description,
+    ipAddress,
+    status,
+    details
+  };
+  db.auditLogs.unshift(newLog);
+  if (db.auditLogs.length > 500) {
+    db.auditLogs.pop();
+  }
+  return newLog;
+}
 
 // API Routes
 app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body;
   const user = db.users.find(u => u.username === username && u.password === password);
   if (user) {
+    logAudit(
+      'LOGIN_SUCCESS',
+      'AUTH',
+      user.id,
+      user.name,
+      user.role,
+      `Pengguna ${user.name} (${user.role}) berhasil masuk ke sistem`,
+      'SUCCESS',
+      '180.252.88.14 (Kota Tidore)',
+      { username }
+    );
     res.json({ success: true, user });
   } else {
+    logAudit(
+      'LOGIN_FAILED',
+      'AUTH',
+      'guest',
+      username || 'Anonim',
+      'Guru/Tendik',
+      `Percobaan login gagal dengan username: "${username}"`,
+      'FAILED',
+      '36.88.12.91 (Maluku Utara)',
+      { attemptedUsername: username }
+    );
     res.status(401).json({ success: false, message: 'Username atau password salah.' });
   }
+});
+
+// Audit Trail API Endpoints
+app.get('/api/audit-trail', (req, res) => {
+  res.json(db.auditLogs);
+});
+
+app.post('/api/audit-trail', (req, res) => {
+  const { action, category, userId, userName, userRole, description, status, ipAddress, details } = req.body;
+  const safeRole: 'Admin' | 'Guru/Tendik' = userRole === 'Admin' ? 'Admin' : 'Guru/Tendik';
+  const record = logAudit(
+    action || 'USER_ACTIVITY',
+    category || 'SISTEM',
+    userId,
+    userName,
+    safeRole,
+    description || 'Aktivitas pengguna tercatat',
+    status || 'SUCCESS',
+    ipAddress || '180.252.88.14 (Kota Tidore)',
+    details
+  );
+  res.json({ success: true, record });
+});
+
+app.delete('/api/audit-trail', (req, res) => {
+  db.auditLogs = [];
+  res.json({ success: true, message: 'Audit trail telah dikosongkan' });
 });
 
 app.get('/api/users', (req, res) => {
@@ -92,6 +284,15 @@ app.get('/api/users', (req, res) => {
 app.post('/api/users', (req, res) => {
   const newUser = { id: Date.now().toString(), ...req.body };
   db.users.push(newUser);
+  logAudit(
+    'USER_CREATED',
+    'SISTEM',
+    '1',
+    'Administrator',
+    'Admin',
+    `Menambahkan pengguna baru: ${newUser.name} (${newUser.role} - ${newUser.username})`,
+    'SUCCESS'
+  );
   res.json({ success: true, user: newUser });
 });
 
@@ -100,6 +301,15 @@ app.put('/api/users/:id', (req, res) => {
   const index = db.users.findIndex(u => u.id === id);
   if (index !== -1) {
     db.users[index] = { ...db.users[index], ...req.body };
+    logAudit(
+      'USER_UPDATED',
+      'SISTEM',
+      '1',
+      'Administrator',
+      'Admin',
+      `Memperbarui profil pengguna: ${db.users[index].name} (${db.users[index].username})`,
+      'SUCCESS'
+    );
     res.json({ success: true, user: db.users[index] });
   } else {
     res.status(404).json({ success: false, message: 'Pengguna tidak ditemukan.' });
@@ -108,7 +318,17 @@ app.put('/api/users/:id', (req, res) => {
 
 app.delete('/api/users/:id', (req, res) => {
   const { id } = req.params;
+  const targetUser = db.users.find(u => u.id === id);
   db.users = db.users.filter(u => u.id !== id);
+  logAudit(
+    'USER_DELETED',
+    'SISTEM',
+    '1',
+    'Administrator',
+    'Admin',
+    `Menghapus pengguna: ${targetUser?.name || id} dari sistem`,
+    'WARNING'
+  );
   res.json({ success: true });
 });
 
@@ -119,6 +339,17 @@ app.get('/api/absensi', (req, res) => {
 app.post('/api/absensi', (req, res) => {
   const record = { id: 'a_' + Date.now(), date: new Date().toISOString().split('T')[0], time: new Date().toTimeString().split(' ')[0], ...req.body };
   db.absensi.unshift(record);
+  logAudit(
+    'ABSENSI_SUBMIT',
+    'ABSENSI',
+    req.body.userId,
+    req.body.name,
+    'Guru/Tendik',
+    `Pencatatan presensi: Status ${record.status} (${record.notes || 'Tepat waktu'})`,
+    'SUCCESS',
+    '182.1.205.88 (Sofifi)',
+    { status: record.status, time: record.time }
+  );
   res.json({ success: true, record });
 });
 
@@ -129,6 +360,15 @@ app.get('/api/jurnal', (req, res) => {
 app.post('/api/jurnal', (req, res) => {
   const record = { id: 'j_' + Date.now(), date: new Date().toISOString().split('T')[0], timestamp: new Date().toTimeString().split(' ')[0], ...req.body };
   db.jurnal.unshift(record);
+  logAudit(
+    'JURNAL_SUBMIT',
+    'JURNAL',
+    req.body.userId,
+    req.body.name,
+    'Guru/Tendik',
+    `Pengisian jurnal KBM ${record.subject} kelas ${record.classRoom} materi: "${record.material}"`,
+    'SUCCESS'
+  );
   res.json({ success: true, record });
 });
 
@@ -139,6 +379,17 @@ app.get('/api/dokumen', (req, res) => {
 app.post('/api/dokumen', (req, res) => {
   const record = { id: 'd_' + Date.now(), uploadDate: new Date().toISOString().split('T')[0], status: 'Menunggu', ...req.body };
   db.dokumen.unshift(record);
+  logAudit(
+    'DOKUMEN_UPLOAD',
+    'DOKUMEN',
+    req.body.userId,
+    req.body.name,
+    'Guru/Tendik',
+    `Mengunggah dokumen ${record.category}: "${record.title}" (${record.fileName})`,
+    'SUCCESS',
+    '182.1.205.42 (Oba Utara)',
+    { category: record.category, fileName: record.fileName }
+  );
   res.json({ success: true, record });
 });
 
@@ -149,6 +400,17 @@ app.put('/api/dokumen/:id/status', (req, res) => {
   if (doc) {
     if (status) doc.status = status;
     if (notes !== undefined) doc.notes = notes;
+    logAudit(
+      'DOKUMEN_VERIFIED',
+      'SUPERVISI',
+      '1',
+      'Administrator',
+      'Admin',
+      `Penelaahan berkas ${doc.category}: "${doc.title}" milik ${doc.name} diubah menjadi "${doc.status}"`,
+      doc.status === 'Disetujui' ? 'SUCCESS' : doc.status === 'Revisi' ? 'WARNING' : 'SUCCESS',
+      '180.252.88.14 (Kota Tidore)',
+      { targetDocId: id, newStatus: doc.status, notes }
+    );
     res.json({ success: true, doc });
   } else {
     res.status(404).json({ success: false, message: 'Dokumen tidak ditemukan' });
@@ -164,6 +426,17 @@ app.post('/api/supervisi', (req, res) => {
   const avg = (Number(pedagogicalScore) + Number(professionalScore) + Number(socialScore) + Number(personalityScore)) / 4;
   const record = { id: 's_' + Date.now(), averageScore: Number(avg.toFixed(1)), ...req.body };
   db.supervisi.unshift(record);
+  logAudit(
+    'SUPERVISI_EVALUASI',
+    'SUPERVISI',
+    '1',
+    record.supervisor || 'Drs. H. Abdullah Mahmud, M.Pd.',
+    'Admin',
+    `Penilaian supervisi tatap muka selesai untuk ${record.teacherName} (Rata-rata: ${record.averageScore})`,
+    'SUCCESS',
+    '180.252.88.14 (Kota Tidore)',
+    { teacher: record.teacherName, avgScore: record.averageScore }
+  );
   res.json({ success: true, record });
 });
 
@@ -173,6 +446,15 @@ app.get('/api/settings', (req, res) => {
 
 app.put('/api/settings', (req, res) => {
   db.settings = { ...db.settings, ...req.body };
+  logAudit(
+    'SETTINGS_UPDATED',
+    'SISTEM',
+    '1',
+    'Administrator',
+    'Admin',
+    `Pengaturan identitas sekolah diperbarui (${db.settings.schoolName})`,
+    'SUCCESS'
+  );
   res.json({ success: true, settings: db.settings });
 });
 
