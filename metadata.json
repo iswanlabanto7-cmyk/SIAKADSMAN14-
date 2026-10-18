@@ -1,0 +1,6 @@
+{
+  "name": "SIAKAD SMA N 14 Tidore Kepulauan",
+  "description": "Sistem Informasi Akademik & Manajemen Guru SMA Negeri 14 Kota Tidore Kepulauan",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
