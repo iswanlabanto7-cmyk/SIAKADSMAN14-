@@ -1,6 +1,6 @@
 import React from 'react';
 import { User } from '../types';
-import { GraduationCap, LogOut, ShieldCheck, UserCheck } from 'lucide-react';
+import { GraduationCap, LogOut, ShieldCheck, UserCheck, HardDrive } from 'lucide-react';
 
 interface NavbarProps {
   user: User;
@@ -158,6 +158,16 @@ export default function Navbar({ user, onLogout, activeTab, setActiveTab }: Navb
               </button>
             </>
           )}
+
+          <button
+            onClick={() => setActiveTab('google-drive')}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition whitespace-nowrap flex items-center gap-1.5 ${
+              activeTab === 'google-drive' ? 'bg-blue-600 text-white font-bold shadow' : 'text-blue-200 hover:bg-blue-900/60'
+            }`}
+          >
+            <HardDrive className="w-4 h-4 text-blue-300" />
+            Google Drive
+          </button>
 
           <button
             onClick={() => setActiveTab('gas-viewer')}

@@ -12,6 +12,13 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      window.addEventListener('unhandledrejection', event => {
+        if (event.reason && event.reason.message && event.reason.message.includes('WebSocket')) {
+          event.preventDefault();
+        }
+      });
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -7,6 +7,7 @@ import TeacherDashboard from './components/TeacherDashboard';
 import GasViewer from './components/GasViewer';
 
 import AuditTrail from './components/AuditTrail';
+import GoogleDriveExplorer from './components/GoogleDriveExplorer';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(() => {
@@ -105,6 +106,12 @@ export default function App() {
       <main className="flex-1 py-8">
         {activeTab === 'gas-viewer' ? (
           <GasViewer />
+        ) : activeTab === 'google-drive' ? (
+          <GoogleDriveExplorer 
+            currentUser={user} 
+            settings={settings} 
+            onSyncDocumentToSiakad={fetchData} 
+          />
         ) : activeTab === 'audit-trail' ? (
           <AuditTrail settings={settings} />
         ) : user.role === 'Admin' ? (
