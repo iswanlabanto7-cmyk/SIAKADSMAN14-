@@ -46,14 +46,7 @@ Aplikasi Web Sistem Informasi Akademik dan Manajemen Guru **SMA Negeri 14 Kota T
 - Halaman inspeksi log forensik aktivitas pengguna dengan filter kategori (AUTH, DOKUMEN, SUPERVISI, ABSENSI, JURNAL, SISTEM), role, dan status.
 - Dilengkapi pencarian IP address, modal inspeksi metadata JSON, dan tombol ekspor PDF resmi laporan audit keamanan.
 
-### 5. Integrasi Google Drive (Google Workspace API v3)
-- Penjelajah berkas Google Drive langsung di dalam aplikasi (`GoogleDriveExplorer.tsx`).
-- Masuk aman menggunakan tombol resmi *Sign in with Google* via Firebase Authentication dengan token akses di memori browser.
-- Buat folder baru, telusuri struktur folder (breadcrumb), cari berkas, dan filter berdasarkan tipe (Dokumen/PDF, Spreadsheet, Presentasi).
-- Unggah berkas perangkat ajar langsung ke Google Drive dan sinkronkan otomatis ke tabel supervisi SIAKAD.
-- Dialog konfirmasi eksplisit sebelum menghapus berkas (menjamin keamanan data pengguna).
-
-### 6. Integrasi Google Apps Script (GAS) & Google Sheets
+### 5. Integrasi Google Apps Script (GAS) & Google Sheets
 - Tab khusus yang menyajikan kode `Code.gs` lengkap (`doGet`, `doPost`, upload Drive, CRUD sheet) dan skema lembar kerja Spreadsheet (`Users`, `Absensi`, `Jurnal`, `Dokumen`, `Supervisi`).
 
 ---
