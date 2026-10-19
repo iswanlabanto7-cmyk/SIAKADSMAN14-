@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { setLocal, getLocal } from '../services/dataService';
 
 interface AdminDashboardProps {
   activeTab: string;
@@ -84,14 +85,18 @@ export default function AdminDashboard({
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(userForm)
-        });
+        }).catch(() => null);
+        const updated = users.map(u => u.id === editingUser.id ? { ...u, ...userForm } : u);
+        setLocal('users', updated);
         showToast('Data pengguna berhasil diperbarui!');
       } else {
+        const newUser: User = { id: Date.now().toString(), ...userForm };
         await fetch('/api/users', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(userForm)
-        });
+        }).catch(() => null);
+        setLocal('users', [...users, newUser]);
         showToast('Pengguna baru berhasil ditambahkan!');
       }
       setShowUserModal(false);
@@ -106,7 +111,9 @@ export default function AdminDashboard({
   const executeDeleteUser = async () => {
     if (!confirmDeleteUser) return;
     try {
-      await fetch(`/api/users/${confirmDeleteUser.id}`, { method: 'DELETE' });
+      await fetch(`/api/users/${confirmDeleteUser.id}`, { method: 'DELETE' }).catch(() => null);
+      const updated = users.filter(u => u.id !== confirmDeleteUser.id);
+      setLocal('users', updated);
       showToast(`Pengguna ${confirmDeleteUser.name} berhasil dihapus.`);
       setConfirmDeleteUser(null);
       refreshData();
@@ -126,15 +133,19 @@ export default function AdminDashboard({
     e.preventDefault();
     try {
       const selectedTeacher = users.find(u => u.id === supForm.userId);
-      const payload = {
+      const avg = (Number(supForm.pedagogicalScore) + Number(supForm.professionalScore) + Number(supForm.socialScore) + Number(supForm.personalityScore)) / 4;
+      const payload: SupervisionRecord = {
+        id: 's_' + Date.now(),
         ...supForm,
+        averageScore: Number(avg.toFixed(1)),
         teacherName: selectedTeacher ? selectedTeacher.name : supForm.teacherName
       };
       await fetch('/api/supervisi', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
-      });
+      }).catch(() => null);
+      setLocal('supervisi', [payload, ...supervisi]);
       setShowSupervisionModal(false);
       showToast('Penilaian supervisi tatap muka berhasil disimpan!');
       refreshData();
@@ -163,7 +174,9 @@ export default function AdminDashboard({
           status: reviewForm.status,
           notes: reviewForm.notes
         })
-      });
+      }).catch(() => null);
+      const updated = dokumen.map(d => d.id === reviewDoc.id ? { ...d, status: reviewForm.status, notes: reviewForm.notes } : d);
+      setLocal('dokumen', updated);
       showToast(`Telaah dokumen ${reviewDoc.category} berhasil disimpan (${reviewForm.status})!`);
       setReviewDoc(null);
       refreshData();
@@ -180,7 +193,8 @@ export default function AdminDashboard({
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settingForm)
-      });
+      }).catch(() => null);
+      setLocal('settings', settingForm);
       showToast('Pengaturan identitas sekolah berhasil diperbarui!');
       refreshData();
     } catch (err) {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { User, AbsensiRecord, JournalRecord, DocumentRecord, SchoolSettings } from '../types';
 import { CheckCircle2, Clock, FileText, Upload, Sparkles, BookOpen, Calendar, Send, Check } from 'lucide-react';
+import { setLocal } from '../services/dataService';
 
 interface TeacherDashboardProps {
   activeTab: string;
@@ -41,11 +42,21 @@ export default function TeacherDashboard({
 
   const handleAbsensiSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const newRecord: AbsensiRecord = {
+      id: 'a_' + Date.now(),
+      date: new Date().toISOString().split('T')[0],
+      time: new Date().toTimeString().split(' ')[0],
+      userId: user.id,
+      name: user.name,
+      status: absensiStatus,
+      notes: absensiNotes
+    };
+    setLocal('absensi', [newRecord, ...absensi]);
     await fetch('/api/absensi', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: user.id, name: user.name, status: absensiStatus, notes: absensiNotes })
-    });
+      body: JSON.stringify(newRecord)
+    }).catch(() => null);
     setAbsensiSuccess(true);
     setTimeout(() => setAbsensiSuccess(false), 3000);
     refreshData();
@@ -53,11 +64,20 @@ export default function TeacherDashboard({
 
   const handleJurnalSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const newRecord: JournalRecord = {
+      id: 'j_' + Date.now(),
+      date: new Date().toISOString().split('T')[0],
+      timestamp: new Date().toTimeString().split(' ')[0],
+      userId: user.id,
+      name: user.name,
+      ...jurnalForm
+    };
+    setLocal('jurnal', [newRecord, ...jurnal]);
     await fetch('/api/jurnal', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: user.id, name: user.name, ...jurnalForm })
-    });
+      body: JSON.stringify(newRecord)
+    }).catch(() => null);
     setJurnalSuccess(true);
     setJurnalForm({ subject: user.subject || '', classRoom: 'XII IPA 1', material: '', notes: '' });
     setTimeout(() => setJurnalSuccess(false), 3000);
@@ -66,19 +86,24 @@ export default function TeacherDashboard({
 
   const handleUploadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const newRecord: DocumentRecord = {
+      id: 'd_' + Date.now(),
+      userId: user.id,
+      name: user.name,
+      title: docForm.title,
+      category: docForm.category,
+      fileName: docForm.fileName || `${docForm.category}_${user.name.split(' ')[0]}_SMA14.pdf`,
+      fileUrl: docForm.fileUrl || `https://drive.google.com/file/d/sman14_tidore_${Date.now()}/view`,
+      fileSize: docForm.fileSize || '850 KB',
+      uploadDate: new Date().toISOString().split('T')[0],
+      status: 'Menunggu'
+    };
+    setLocal('dokumen', [newRecord, ...dokumen]);
     await fetch('/api/dokumen', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: user.id,
-        name: user.name,
-        title: docForm.title,
-        category: docForm.category,
-        fileName: docForm.fileName || `${docForm.category}_${user.name.split(' ')[0]}_SMA14.pdf`,
-        fileUrl: docForm.fileUrl || `https://drive.google.com/file/d/sman14_tidore_${Date.now()}/view`,
-        fileSize: docForm.fileSize || '850 KB'
-      })
-    });
+      body: JSON.stringify(newRecord)
+    }).catch(() => null);
     setUploadSuccess(true);
     setDocForm({ title: '', category: 'ATP', fileName: '', fileUrl: '', fileSize: '500 KB' });
     setTimeout(() => setUploadSuccess(false), 3000);

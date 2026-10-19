@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { User } from '../types';
 import { GraduationCap, ShieldCheck, UserCheck, Lock, User as UserIcon, ArrowRight } from 'lucide-react';
 
+import { clientAuthenticate } from '../services/dataService';
+
 interface LoginScreenProps {
   onLoginSuccess: (user: User) => void;
 }
@@ -14,8 +16,8 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
 
   const handleLogin = async (e?: React.FormEvent, presetUser?: string, presetPass?: string) => {
     if (e) e.preventDefault();
-    const u = presetUser || username;
-    const p = presetPass || password;
+    const u = (presetUser || username).trim();
+    const p = (presetPass || password).trim();
 
     setLoading(true);
     setError('');
@@ -26,14 +28,32 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: u, password: p })
       });
-      const data = await res.json();
-      if (data.success) {
-        onLoginSuccess(data.user);
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.user) {
+          onLoginSuccess(data.user);
+          return;
+        } else {
+          setError(data.message || 'Username atau password salah.');
+          return;
+        }
+      } else if (res.status === 401) {
+        const data = await res.json().catch(() => null);
+        setError(data?.message || 'Username atau password salah.');
+        return;
       } else {
-        setError(data.message || 'Login gagal.');
+        // Status 404/500 on Vercel static deployment -> trigger fallback
+        throw new Error('API unavailable on serverless static host');
       }
     } catch (err) {
-      setError('Terjadi kesalahan koneksi.');
+      // Vercel Serverless / Static Deployment Fallback:
+      const fallback = clientAuthenticate(u, p);
+      if (fallback.success && fallback.user) {
+        onLoginSuccess(fallback.user);
+      } else {
+        setError(fallback.message || 'Username atau password salah.');
+      }
     } finally {
       setLoading(false);
     }

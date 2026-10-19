@@ -7,7 +7,12 @@ import TeacherDashboard from './components/TeacherDashboard';
 import GasViewer from './components/GasViewer';
 
 import AuditTrail from './components/AuditTrail';
-import GoogleDriveExplorer from './components/GoogleDriveExplorer';
+
+import { 
+  DEFAULT_SETTINGS, DEFAULT_USERS, DEFAULT_DOCUMENTS, 
+  DEFAULT_ABSENSI, DEFAULT_JURNAL, DEFAULT_SUPERVISI, 
+  getLocal, setLocal 
+} from './services/dataService';
 
 export default function App() {
   const [user, setUser] = useState<User | null>(() => {
@@ -17,40 +22,33 @@ export default function App() {
 
   const [activeTab, setActiveTab] = useState('dashboard');
 
-  // Data states
-  const [users, setUsers] = useState<User[]>([]);
-  const [absensi, setAbsensi] = useState<AbsensiRecord[]>([]);
-  const [jurnal, setJurnal] = useState<JournalRecord[]>([]);
-  const [dokumen, setDokumen] = useState<DocumentRecord[]>([]);
-  const [supervisi, setSupervisi] = useState<SupervisionRecord[]>([]);
-  const [settings, setSettings] = useState<SchoolSettings>({
-    schoolName: "SMA Negeri 14 Kota Tidore Kepulauan",
-    npsn: "69988123",
-    address: "Jl. Lintas Tidore - Sofifi, Kelurahan Guraping, Kec. Oba Utara, Kota Tidore Kepulauan",
-    principalName: "Drs. H. Abdullah Mahmud, M.Pd.",
-    academicYear: "2025/2026",
-    semester: "Ganjil"
-  });
+  // Data states with automatic offline/Vercel fallback
+  const [users, setUsers] = useState<User[]>(() => getLocal('users', DEFAULT_USERS));
+  const [absensi, setAbsensi] = useState<AbsensiRecord[]>(() => getLocal('absensi', DEFAULT_ABSENSI));
+  const [jurnal, setJurnal] = useState<JournalRecord[]>(() => getLocal('jurnal', DEFAULT_JURNAL));
+  const [dokumen, setDokumen] = useState<DocumentRecord[]>(() => getLocal('dokumen', DEFAULT_DOCUMENTS));
+  const [supervisi, setSupervisi] = useState<SupervisionRecord[]>(() => getLocal('supervisi', DEFAULT_SUPERVISI));
+  const [settings, setSettings] = useState<SchoolSettings>(() => getLocal('settings', DEFAULT_SETTINGS));
 
   const fetchData = async () => {
     try {
       const [uRes, aRes, jRes, dRes, sRes, setRes] = await Promise.all([
-        fetch('/api/users').then(r => r.json()),
-        fetch('/api/absensi').then(r => r.json()),
-        fetch('/api/jurnal').then(r => r.json()),
-        fetch('/api/dokumen').then(r => r.json()),
-        fetch('/api/supervisi').then(r => r.json()),
-        fetch('/api/settings').then(r => r.json())
+        fetch('/api/users').then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch('/api/absensi').then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch('/api/jurnal').then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch('/api/dokumen').then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch('/api/supervisi').then(r => r.ok ? r.json() : null).catch(() => null),
+        fetch('/api/settings').then(r => r.ok ? r.json() : null).catch(() => null)
       ]);
 
-      setUsers(uRes);
-      setAbsensi(aRes);
-      setJurnal(jRes);
-      setDokumen(dRes);
-      setSupervisi(sRes);
-      setSettings(setRes);
+      if (uRes) { setUsers(uRes); setLocal('users', uRes); }
+      if (aRes) { setAbsensi(aRes); setLocal('absensi', aRes); }
+      if (jRes) { setJurnal(jRes); setLocal('jurnal', jRes); }
+      if (dRes) { setDokumen(dRes); setLocal('dokumen', dRes); }
+      if (sRes) { setSupervisi(sRes); setLocal('supervisi', sRes); }
+      if (setRes) { setSettings(setRes); setLocal('settings', setRes); }
     } catch (err) {
-      console.error('Error fetching data:', err);
+      console.log('App running in client fallback mode for Vercel/offline');
     }
   };
 
@@ -106,12 +104,6 @@ export default function App() {
       <main className="flex-1 py-8">
         {activeTab === 'gas-viewer' ? (
           <GasViewer />
-        ) : activeTab === 'google-drive' ? (
-          <GoogleDriveExplorer 
-            currentUser={user} 
-            settings={settings} 
-            onSyncDocumentToSiakad={fetchData} 
-          />
         ) : activeTab === 'audit-trail' ? (
           <AuditTrail settings={settings} />
         ) : user.role === 'Admin' ? (
