@@ -9,6 +9,22 @@
     <meta property="og:description" content="Sistem Informasi Akademik & Manajemen Guru SMA Negeri 14 Kota Tidore Kepulauan" />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
+    <script>
+      // Suppress benign Vite WebSocket HMR disconnection rejections in cloud container
+      window.addEventListener('unhandledrejection', function(event) {
+        var reason = event && event.reason;
+        var msg = (reason && reason.message) || String(reason || '');
+        if (msg.includes('WebSocket') || msg.includes('websocket') || msg.includes('@vite/client')) {
+          event.preventDefault();
+        }
+      });
+      window.addEventListener('error', function(event) {
+        var msg = event && event.message ? event.message : '';
+        if (msg.includes('WebSocket') || msg.includes('websocket')) {
+          event.preventDefault();
+        }
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>

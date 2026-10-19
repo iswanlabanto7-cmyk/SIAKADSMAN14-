@@ -6,6 +6,7 @@ import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
 
 dotenv.config();
+process.env.DISABLE_HMR = 'true';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -647,9 +648,9 @@ Berdasarkan hasil supervisi pembelajaran dan telaah perangkat ajar (ATP, PROTA, 
   }
 });
 
-// Vite middleware for development
+// Vite middleware for development (HMR disabled in cloud container)
 const vite = await createViteServer({
-  server: { middlewareMode: true, hmr: false }
+  server: { middlewareMode: true, hmr: false, ws: false }
 });
 app.use(vite.middlewares);
 
